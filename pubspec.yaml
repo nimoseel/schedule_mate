@@ -78,6 +78,24 @@ flutter:
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
 
+  fonts:
+    - family: IBMPlexSans
+      fonts:
+        - asset: asset/font/IBMPlexSansKR-Bold.ttf
+          weight: 700
+        - asset: asset/font/IBMPlexSansKR-SemiBold.ttf
+          weight: 600
+        - asset: asset/font/IBMPlexSansKR-Medium.ttf
+          weight: 500
+        - asset: asset/font/IBMPlexSansKR-Regular.ttf
+          weight: 400
+        - asset: asset/font/IBMPlexSansKR-Light.ttf
+          weight: 300
+        - asset: asset/font/IBMPlexSansKR-ExtraLight.ttf
+          weight: 200
+        - asset: asset/font/IBMPlexSansKR-Thin.ttf
+          weight: 100
+
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a

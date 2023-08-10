@@ -23,6 +23,7 @@ class _CalendarState extends State {
     );
 
     return TableCalendar(
+      locale: 'ko_KR',
       focusedDay: focusedDay,
       firstDay: DateTime(2010),
       lastDay: DateTime(2123),
@@ -38,7 +39,9 @@ class _CalendarState extends State {
           color: PRIMARY_COLOR,
         ),
       ),
+      daysOfWeekHeight: 20.0,
       calendarStyle: CalendarStyle(
+        tablePadding : EdgeInsets.symmetric(horizontal: 8.0),
         isTodayHighlighted: false,
         defaultDecoration: defaultBoxStyle,
         weekendDecoration: defaultBoxStyle,

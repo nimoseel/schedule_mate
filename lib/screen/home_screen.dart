@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schedule_mate/component/calendar.dart';
+import 'package:schedule_mate/component/schedule_card.dart';
 import 'package:schedule_mate/const/color.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,6 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
     DateTime.now().day,
   );
   DateTime focusedDay = DateTime.now();
+  bool isChecked = false;
+
   @override
   Widget build(BuildContext context) {
     const TextStyle bannerTextStyle = TextStyle(
@@ -50,6 +53,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
+            SizedBox(
+              height: 15.0,
+            ),
+            ScheduleCard(isChecked: isChecked, onChanged: onChanged,)
           ],
         ),
       ),
@@ -60,6 +67,12 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       this.selectedDay = selectedDay;
       this.focusedDay = selectedDay;
+    });
+  }
+
+  void onChanged(bool? newValue) {
+    setState(() {
+      isChecked = newValue ?? false; // newValue가 null이면 기본값 false를 사용
     });
   }
 }

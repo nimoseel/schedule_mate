@@ -40,7 +40,7 @@ class Calendar extends StatelessWidget {
       ),
       daysOfWeekHeight: 20.0,
       calendarStyle: CalendarStyle(
-        tablePadding : EdgeInsets.symmetric(horizontal: 8.0),
+        tablePadding: EdgeInsets.symmetric(horizontal: 8.0),
         isTodayHighlighted: false,
         defaultDecoration: defaultBoxStyle,
         weekendDecoration: defaultBoxStyle,

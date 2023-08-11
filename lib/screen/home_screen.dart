@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schedule_mate/component/calendar.dart';
+import 'package:schedule_mate/component/count_banner.dart';
 import 'package:schedule_mate/component/schedule_card.dart';
 import 'package:schedule_mate/const/color.dart';
 
@@ -21,9 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const TextStyle bannerTextStyle = TextStyle(
-        color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.w500);
-
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -36,30 +34,23 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 15.0,
             ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 20.0),
-              color: PRIMARY_COLOR,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${selectedDay.year}년 ${selectedDay.month}월 ${selectedDay.day}일',
-                    style: bannerTextStyle,
-                  ),
-                  Text(
-                    '3개',
-                    style: bannerTextStyle,
-                  ),
-                ],
-              ),
-            ),
+            CountBanner(selectedDay: selectedDay),
             SizedBox(
               height: 15.0,
             ),
             // ReorderableListView.builder
-            ScheduleCard(isChecked: isChecked, onChanged: onChanged,)
+            _ScheduleList(
+              isChecked: isChecked,
+              onChanged: onChanged,
+            ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: PRIMARY_COLOR,
+        splashColor: PRIMARY_COLOR[600],
+        child: Icon(Icons.add),
+        onPressed: () {},
       ),
     );
   }
@@ -74,7 +65,36 @@ class _HomeScreenState extends State<HomeScreen> {
   void onChanged(bool? newValue) {
     setState(() {
       isChecked = newValue ?? false; // newValue가 null이면 기본값 false를 사용
-    // 만약에 isCheck가 true면 리스트를 맨아래로 보내기
+      // 만약에 isCheck가 true면 리스트를 맨아래로 보내기
     });
+  }
+}
+
+class _ScheduleList extends StatelessWidget {
+  final bool isChecked;
+  final ValueChanged<bool?> onChanged;
+
+  const _ScheduleList({
+    required this.isChecked,
+    required this.onChanged,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        child: ListView.builder(
+          itemCount: 10,
+          itemBuilder: (context, index) {
+            return ScheduleCard(
+              isChecked: isChecked,
+              onChanged: onChanged,
+            );
+          },
+        ),
+      ),
+    );
   }
 }

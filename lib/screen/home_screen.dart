@@ -56,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 15.0,
             ),
+            // ReorderableListView.builder
             ScheduleCard(isChecked: isChecked, onChanged: onChanged,)
           ],
         ),
@@ -73,6 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void onChanged(bool? newValue) {
     setState(() {
       isChecked = newValue ?? false; // newValue가 null이면 기본값 false를 사용
+    // 만약에 isCheck가 true면 리스트를 맨아래로 보내기
     });
   }
 }

@@ -3,9 +3,11 @@ import '../const/color.dart';
 
 class CountBanner extends StatelessWidget {
   final DateTime selectedDay;
+  final int count;
 
   const CountBanner({
     required this.selectedDay,
+    required this.count,
     Key? key,
   }) : super(key: key);
 
@@ -25,7 +27,7 @@ class CountBanner extends StatelessWidget {
             style: bannerTextStyle,
           ),
           Text(
-            '3개',
+            '$count개',
             style: bannerTextStyle,
           ),
         ],

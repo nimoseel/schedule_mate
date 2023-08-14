@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 15.0,
             ),
-            CountBanner(selectedDay: selectedDay),
+            CountBanner(selectedDay: selectedDay, count: 5,),
             SizedBox(
               height: 15.0,
             ),
@@ -50,7 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: PRIMARY_COLOR,
         splashColor: PRIMARY_COLOR[600],
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          // _ScheduleList에 ScheduleCard 하나 추가
+          print('click');
+        },
       ),
     );
   }
@@ -86,7 +89,7 @@ class _ScheduleList extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 8.0),
         child: ListView.builder(
-          itemCount: 10,
+          itemCount: 3,
           itemBuilder: (context, index) {
             return ScheduleCard(
               isChecked: isChecked,

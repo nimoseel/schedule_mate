@@ -22,38 +22,45 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Calendar(
-              selectedDay: selectedDay,
-              focusedDay: focusedDay,
-              onDaySelected: onDaySelected,
-            ),
-            SizedBox(
-              height: 15.0,
-            ),
-            CountBanner(selectedDay: selectedDay, count: 5,),
-            SizedBox(
-              height: 15.0,
-            ),
-            // ReorderableListView.builder
-            _ScheduleList(
-              isChecked: isChecked,
-              onChanged: onChanged,
-            ),
-          ],
+    return GestureDetector(
+      onTap: (){
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              Calendar(
+                selectedDay: selectedDay,
+                focusedDay: focusedDay,
+                onDaySelected: onDaySelected,
+              ),
+              SizedBox(
+                height: 15.0,
+              ),
+              CountBanner(
+                selectedDay: selectedDay,
+                count: 5,
+              ),
+              SizedBox(
+                height: 15.0,
+              ),
+              // ReorderableListView.builder
+              _ScheduleList(
+                isChecked: isChecked,
+                onChanged: onChanged,
+              ),
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: PRIMARY_COLOR,
-        splashColor: PRIMARY_COLOR[600],
-        child: Icon(Icons.add),
-        onPressed: () {
-          // _ScheduleList에 ScheduleCard 하나 추가
-          print('click');
-        },
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: PRIMARY_COLOR,
+          splashColor: PRIMARY_COLOR[600],
+          child: Icon(Icons.add),
+          onPressed: () {
+            // _ScheduleList에 ScheduleCard 하나 추가
+          },
+        ),
       ),
     );
   }

@@ -38,7 +38,6 @@ class ScheduleCard extends StatelessWidget {
                     color: Colors.pink,
                   ),
                 ),
-                // 포커스 되면 키보드 올리기
               ),
             ),
           ),

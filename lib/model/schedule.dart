@@ -4,6 +4,9 @@ class Schedules extends Table {
   // id
   IntColumn get id => integer().autoIncrement()();
 
+  // 스케쥴 완료 여부
+  BoolColumn get done => boolean()();
+
   // 스케쥴 내용
   TextColumn get content => text()();
 

@@ -18,6 +18,10 @@ class LocalDatabase extends _$LocalDatabase {
   // 스케쥴 생성 쿼리
   Future<int> createSchedule(SchedulesCompanion data) => into(schedules).insert(data);
 
+  // 스케쥴 데이터 Stream 쿼리
+  Stream<List<Schedule>> watchSchedules(DateTime date) =>
+      (select(schedules)..where((tbl) => tbl.date.equals(date))).watch();
+
   @override
   int get schemaVersion => 1;
 }

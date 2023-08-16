@@ -3,6 +3,8 @@ import 'package:schedule_mate/component/calendar.dart';
 import 'package:schedule_mate/component/count_banner.dart';
 import 'package:schedule_mate/component/schedule_card.dart';
 import 'package:schedule_mate/const/color.dart';
+import 'package:schedule_mate/database/drift_database.dart';
+import 'package:get_it/get_it.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -18,7 +20,6 @@ class _HomeScreenState extends State<HomeScreen> {
     DateTime.now().day,
   );
   DateTime focusedDay = DateTime.now();
-  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +41,13 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               CountBanner(
                 selectedDay: selectedDay,
-                count: 5,
               ),
               SizedBox(
                 height: 15.0,
               ),
               // ReorderableListView.builder
               _ScheduleList(
-                isChecked: isChecked,
-                onChanged: onChanged,
+                selectedDate: selectedDay,
               ),
             ],
           ),
@@ -57,9 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: PRIMARY_COLOR,
           splashColor: PRIMARY_COLOR[600],
           child: Icon(Icons.add),
-          onPressed: () {
-            // _ScheduleList에 ScheduleCard 하나 추가
-          },
+          onPressed: () {},
         ),
       ),
     );
@@ -71,22 +68,13 @@ class _HomeScreenState extends State<HomeScreen> {
       this.focusedDay = selectedDay;
     });
   }
-
-  void onChanged(bool? newValue) {
-    setState(() {
-      isChecked = newValue ?? false; // newValue가 null이면 기본값 false를 사용
-      // 만약에 isCheck가 true면 리스트를 맨아래로 보내기
-    });
-  }
 }
 
 class _ScheduleList extends StatelessWidget {
-  final bool isChecked;
-  final ValueChanged<bool?> onChanged;
+  final DateTime selectedDate;
 
   const _ScheduleList({
-    required this.isChecked,
-    required this.onChanged,
+    required this.selectedDate,
     Key? key,
   }) : super(key: key);
 
@@ -95,15 +83,33 @@ class _ScheduleList extends StatelessWidget {
     return Expanded(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 8.0),
-        child: ListView.builder(
-          itemCount: 3,
-          itemBuilder: (context, index) {
-            return ScheduleCard(
-              isChecked: isChecked,
-              onChanged: onChanged,
-            );
-          },
-        ),
+        child: StreamBuilder<List<Schedule>>(
+            stream: GetIt.I<LocalDatabase>().watchSchedules(selectedDate),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasData && snapshot.data!.isEmpty) {
+                return Center(
+                  child: Text('스케줄이 없습니다.'),
+                );
+              }
+
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  // print(snapshot.data);
+                  final schedule = snapshot.data![index];
+
+                  return ScheduleCard(
+                    selectedDate: schedule.date,
+                    isChecked: schedule.done,
+                    content: schedule.content,
+                  );
+                },
+              );
+            }),
       ),
     );
   }

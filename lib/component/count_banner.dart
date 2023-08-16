@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:schedule_mate/database/drift_database.dart';
 import '../const/color.dart';
 
 class CountBanner extends StatelessWidget {
   final DateTime selectedDay;
-  final int count;
 
   const CountBanner({
     required this.selectedDay,
-    required this.count,
+
     Key? key,
   }) : super(key: key);
 
@@ -26,9 +27,20 @@ class CountBanner extends StatelessWidget {
             '${selectedDay.year}년 ${selectedDay.month}월 ${selectedDay.day}일',
             style: bannerTextStyle,
           ),
-          Text(
-            '$count개',
-            style: bannerTextStyle,
+          StreamBuilder<List<Schedule>>(
+            stream: GetIt.I<LocalDatabase>().watchSchedules(selectedDay),
+            builder: (context, snapshot) {
+              int count = 0;
+
+              if(snapshot.hasData){
+                count = snapshot.data!.length;
+              }
+
+              return Text(
+                '$count개',
+                style: bannerTextStyle,
+              );
+            }
           ),
         ],
       ),

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:drift/drift.dart';
 import 'package:schedule_mate/const/color.dart';
+import 'package:schedule_mate/database/drift_database.dart';
 
 class ScheduleCard extends StatefulWidget {
+  final DateTime selectedDate;
   final bool isChecked;
-  final Function(bool?)? onChanged;
+  final String content;
 
-  ScheduleCard({
+  const ScheduleCard({
+    required this.selectedDate,
     required this.isChecked,
-    required this.onChanged,
+    required this.content,
     Key? key,
   }) : super(key: key);
 
@@ -17,6 +22,10 @@ class ScheduleCard extends StatefulWidget {
 
 class _ScheduleCardState extends State<ScheduleCard> {
   final GlobalKey<FormState> formKey = GlobalKey();
+
+  String? content;
+  bool _isChecked = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,19 +33,22 @@ class _ScheduleCardState extends State<ScheduleCard> {
       child: Row(
         children: [
           Checkbox(
-            value: widget.isChecked,
-            onChanged: widget.onChanged,
+            value: _isChecked,
+            onChanged: _onChanged,
             activeColor: PRIMARY_COLOR,
             side: BorderSide(
               color: PRIMARY_COLOR,
             ),
           ),
-          Form(
+          widget.content.isEmpty ? Form(
             key: formKey,
             child: Expanded(
               child: TextFormField(
-                validator: (String? val){
-                  if(val == null || val.isEmpty){
+                onSaved: (String? val) {
+                  content = val;
+                },
+                validator: (String? val) {
+                  if (val == null || val.isEmpty) {
                     return '값을 입력해주세요';
                   }
                   return null;
@@ -53,21 +65,41 @@ class _ScheduleCardState extends State<ScheduleCard> {
                     ),
                   ),
                 ),
-                onFieldSubmitted: (String value) {
-                  if(formKey.currentState == null){
-                    return;
-                  }
-                  if(formKey.currentState!.validate()){
-                    print('에러없음');
-                  }else{
-                    print('에러있음');
-                  }
-                },
+                onFieldSubmitted: onFieldSubmitted,
               ),
             ),
-          ),
+          )
+              : Text(widget.content),
         ],
       ),
     );
   }
+
+  void _onChanged(bool? newValue) {
+    setState(() {
+      _isChecked = newValue ?? false; // newValue가 null이면 기본값 false를 사용
+      // 만약에 isCheck가 true면 리스트를 맨아래로 보내기
+    });
+  }
+
+  onFieldSubmitted(String? value) async {
+    if (formKey.currentState == null) {
+      return;
+    }
+
+    if (formKey.currentState!.validate()) {
+      formKey.currentState!.save();
+      final key = await GetIt.I<LocalDatabase>().createSchedule(
+        SchedulesCompanion(
+          done: Value(false),
+          content: Value(content!),
+          date: Value(widget.selectedDate),
+        ),
+      );
+      print('save완료 $key');
+    } else {
+      print('에러있음');
+    }
+  }
 }
+

@@ -8,11 +8,13 @@ class ScheduleCard extends StatefulWidget {
   final DateTime selectedDate;
   final bool isChecked;
   final String content;
+  final int? scheduleId;
 
   const ScheduleCard({
     required this.selectedDate,
     required this.isChecked,
     required this.content,
+    this.scheduleId,
     Key? key,
   }) : super(key: key);
 
@@ -33,42 +35,43 @@ class _ScheduleCardState extends State<ScheduleCard> {
       child: Row(
         children: [
           Checkbox(
-            value: _isChecked,
+            value: widget.isChecked ? widget.isChecked : _isChecked,
             onChanged: _onChanged,
             activeColor: PRIMARY_COLOR,
             side: BorderSide(
               color: PRIMARY_COLOR,
             ),
           ),
-          widget.content.isEmpty ? Form(
-            key: formKey,
-            child: Expanded(
-              child: TextFormField(
-                onSaved: (String? val) {
-                  content = val;
-                },
-                validator: (String? val) {
-                  if (val == null || val.isEmpty) {
-                    return '값을 입력해주세요';
-                  }
-                  return null;
-                },
-                cursorColor: PRIMARY_COLOR,
-                cursorWidth: 1.0,
-                cursorHeight: 20.0,
-                decoration: InputDecoration(
-                  iconColor: Colors.pink,
-                  border: InputBorder.none,
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Colors.pink,
+          widget.content.isEmpty
+              ? Form(
+                  key: formKey,
+                  child: Expanded(
+                    child: TextFormField(
+                      onSaved: (String? val) {
+                        content = val;
+                      },
+                      validator: (String? val) {
+                        if (val == null || val.isEmpty) {
+                          return '값을 입력해주세요';
+                        }
+                        return null;
+                      },
+                      cursorColor: PRIMARY_COLOR,
+                      cursorWidth: 1.0,
+                      cursorHeight: 20.0,
+                      decoration: InputDecoration(
+                        iconColor: Colors.pink,
+                        border: InputBorder.none,
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Colors.pink,
+                          ),
+                        ),
+                      ),
+                      onFieldSubmitted: onFieldSubmitted,
                     ),
                   ),
-                ),
-                onFieldSubmitted: onFieldSubmitted,
-              ),
-            ),
-          )
+                )
               : Text(widget.content),
         ],
       ),
@@ -78,6 +81,15 @@ class _ScheduleCardState extends State<ScheduleCard> {
   void _onChanged(bool? newValue) {
     setState(() {
       _isChecked = newValue ?? false; // newValue가 null이면 기본값 false를 사용
+
+      GetIt.I<LocalDatabase>().updateScheduleById(
+        widget.scheduleId!,
+        SchedulesCompanion(
+          done: Value(_isChecked),
+          content: Value(widget.content),
+          date: Value(widget.selectedDate),
+        ),
+      );
       // 만약에 isCheck가 true면 리스트를 맨아래로 보내기
     });
   }
@@ -102,4 +114,3 @@ class _ScheduleCardState extends State<ScheduleCard> {
     }
   }
 }
-

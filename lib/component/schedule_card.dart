@@ -31,48 +31,71 @@ class _ScheduleCardState extends State<ScheduleCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(5.0, 0.0, 25.0, 0.0),
+      padding: EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Checkbox(
-            value: widget.isChecked ? widget.isChecked : _isChecked,
-            onChanged: _onChanged,
-            activeColor: PRIMARY_COLOR,
-            side: BorderSide(
-              color: PRIMARY_COLOR,
-            ),
-          ),
-          widget.content.isEmpty
-              ? Form(
-                  key: formKey,
-                  child: Expanded(
-                    child: TextFormField(
-                      onSaved: (String? val) {
-                        content = val;
-                      },
-                      validator: (String? val) {
-                        if (val == null || val.isEmpty) {
-                          return '값을 입력해주세요';
-                        }
-                        return null;
-                      },
-                      cursorColor: PRIMARY_COLOR,
-                      cursorWidth: 1.0,
-                      cursorHeight: 20.0,
-                      decoration: InputDecoration(
-                        iconColor: Colors.pink,
-                        border: InputBorder.none,
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.pink,
+          Row(
+            children: [
+              Checkbox(
+                value: widget.isChecked ? widget.isChecked : _isChecked,
+                onChanged: _onChanged,
+                activeColor: PRIMARY_COLOR,
+                side: BorderSide(
+                  color: PRIMARY_COLOR,
+                ),
+              ),
+              widget.content.isEmpty
+                  ? Form(
+                      key: formKey,
+                      child: Expanded(
+                        child: TextFormField(
+                          onSaved: (String? val) {
+                            content = val;
+                          },
+                          validator: (String? val) {
+                            if (val == null || val.isEmpty) {
+                              return '값을 입력해주세요';
+                            }
+                            return null;
+                          },
+                          cursorColor: PRIMARY_COLOR,
+                          cursorWidth: 1.0,
+                          cursorHeight: 20.0,
+                          decoration: InputDecoration(
+                            iconColor: Colors.pink,
+                            border: InputBorder.none,
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Colors.pink,
+                              ),
+                            ),
                           ),
+                          onFieldSubmitted: onFieldSubmitted,
                         ),
                       ),
-                      onFieldSubmitted: onFieldSubmitted,
-                    ),
-                  ),
-                )
-              : Text(widget.content),
+                    )
+                  : Text(widget.content),
+            ],
+          ),
+          SizedBox(
+            width: 45.0,
+            child: ElevatedButton(
+              onPressed: () {
+                print('더보기 버튼 클릭');
+              },
+              style: ElevatedButton.styleFrom(
+                shadowColor: Colors.transparent,
+                backgroundColor: Colors.transparent,
+                padding: EdgeInsets.only(right: 5.0),
+              ),
+              child: Icon(
+                Icons.more_vert,
+                color: Colors.grey,
+                size: 20.0,
+              ),
+            ),
+          ),
         ],
       ),
     );

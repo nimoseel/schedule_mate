@@ -3,18 +3,19 @@ import 'package:get_it/get_it.dart';
 import 'package:drift/drift.dart';
 import 'package:schedule_mate/const/color.dart';
 import 'package:schedule_mate/database/drift_database.dart';
+import 'ControlBottomSheet.dart';
 
 class ScheduleCard extends StatefulWidget {
   final DateTime selectedDate;
   final bool isChecked;
   final String content;
-  final int? scheduleId;
+  final int scheduleId;
 
   const ScheduleCard({
     required this.selectedDate,
     required this.isChecked,
     required this.content,
-    this.scheduleId,
+    required this.scheduleId,
     Key? key,
   }) : super(key: key);
 
@@ -30,6 +31,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       padding: EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
       child: Row(
@@ -75,7 +77,12 @@ class _ScheduleCardState extends State<ScheduleCard> {
                         ),
                       ),
                     )
-                  : Text(widget.content),
+                  : GestureDetector(
+                      onTap: () {
+                        _showBottomSheet();
+                      },
+                      child: Text(widget.content),
+                    ),
             ],
           ),
           SizedBox(
@@ -83,6 +90,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
             child: ElevatedButton(
               onPressed: () {
                 print('더보기 버튼 클릭');
+                _showBottomSheet();
               },
               style: ElevatedButton.styleFrom(
                 shadowColor: Colors.transparent,
@@ -106,7 +114,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
       _isChecked = newValue ?? false; // newValue가 null이면 기본값 false를 사용
 
       GetIt.I<LocalDatabase>().updateScheduleById(
-        widget.scheduleId!,
+        widget.scheduleId,
         SchedulesCompanion(
           done: Value(_isChecked),
           content: Value(widget.content),
@@ -135,5 +143,17 @@ class _ScheduleCardState extends State<ScheduleCard> {
     } else {
       print('에러있음');
     }
+  }
+
+  void _showBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return ControlBottomSheet(
+          selectedDate: widget.selectedDate,
+          scheduleId: widget.scheduleId,
+        );
+      },
+    );
   }
 }

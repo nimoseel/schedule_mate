@@ -22,6 +22,10 @@ class LocalDatabase extends _$LocalDatabase {
   Stream<List<Schedule>> watchSchedules(DateTime date) =>
       (select(schedules)..where((tbl) => tbl.date.equals(date))).watch();
 
+  // 스케쥴 데이터 update 쿼리
+  Future<int> updateScheduleById(int id, SchedulesCompanion data) =>
+      (update(schedules)..where((tbl) => tbl.id.equals(id))).write(data);
+
   @override
   int get schemaVersion => 1;
 }

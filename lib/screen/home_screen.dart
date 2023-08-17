@@ -106,6 +106,7 @@ class _ScheduleList extends StatelessWidget {
                     selectedDate: schedule.date,
                     isChecked: schedule.done,
                     content: schedule.content,
+                    scheduleId: schedule.id,
                   );
                 },
               );

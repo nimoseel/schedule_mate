@@ -30,14 +30,22 @@ class CountBanner extends StatelessWidget {
           StreamBuilder<List<Schedule>>(
             stream: GetIt.I<LocalDatabase>().watchSchedules(selectedDay),
             builder: (context, snapshot) {
+              List<Schedule> dataList = snapshot.data!;
               int count = 0;
+              int doneCount = 0;
 
               if(snapshot.hasData){
                 count = snapshot.data!.length;
               }
 
+              for(Schedule data in dataList){
+                if(data.done == true){
+                  doneCount++;
+                }
+              }
+
               return Text(
-                '$count개',
+                '${doneCount}/${count}개',
                 style: bannerTextStyle,
               );
             }

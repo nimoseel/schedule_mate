@@ -8,14 +8,14 @@ import 'ControlBottomSheet.dart';
 class ScheduleCard extends StatefulWidget {
   final DateTime selectedDate;
   final bool isChecked;
-  final String content;
-  final int scheduleId;
+  final String? content;
+  final int? scheduleId;
 
   const ScheduleCard({
     required this.selectedDate,
     required this.isChecked,
-    required this.content,
-    required this.scheduleId,
+    this.content,
+    this.scheduleId,
     Key? key,
   }) : super(key: key);
 
@@ -26,8 +26,17 @@ class ScheduleCard extends StatefulWidget {
 class _ScheduleCardState extends State<ScheduleCard> {
   final GlobalKey<FormState> formKey = GlobalKey();
 
-  String? content;
   bool _isChecked = false;
+  String? _content;
+  int? _scheduleId;
+
+  @override
+  void initState(){
+    super.initState();
+    _isChecked = widget.isChecked;
+    _content = widget.content;
+    _scheduleId = widget.scheduleId;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,53 +46,56 @@ class _ScheduleCardState extends State<ScheduleCard> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Checkbox(
-                value: widget.isChecked ? widget.isChecked : _isChecked,
-                onChanged: _onChanged,
-                activeColor: PRIMARY_COLOR,
-                side: BorderSide(
-                  color: PRIMARY_COLOR,
+          Expanded(
+            child: Row(
+              children: [
+                Checkbox(
+                  value: _isChecked,
+                  onChanged: _onChanged,
+                  activeColor: PRIMARY_COLOR,
+                  side: BorderSide(
+                    color: PRIMARY_COLOR,
+                  ),
                 ),
-              ),
-              widget.content.isEmpty
-                  ? Form(
-                      key: formKey,
-                      child: Expanded(
-                        child: TextFormField(
-                          onSaved: (String? val) {
-                            content = val;
-                          },
-                          validator: (String? val) {
-                            if (val == null || val.isEmpty) {
-                              return '값을 입력해주세요';
-                            }
-                            return null;
-                          },
-                          cursorColor: PRIMARY_COLOR,
-                          cursorWidth: 1.0,
-                          cursorHeight: 20.0,
-                          decoration: InputDecoration(
-                            iconColor: Colors.pink,
-                            border: InputBorder.none,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.pink,
+                _content == null
+                    ? Form(
+                        key: formKey,
+                        child: Expanded(
+                          child: TextFormField(
+                            onSaved: (String? val) {
+                              _content = val;
+                            },
+                            validator: (String? val) {
+                              if (val == null || val.isEmpty) {
+                                return '값을 입력해주세요';
+                              }
+                              return null;
+                            },
+                            autofocus: true,
+                            cursorColor: PRIMARY_COLOR,
+                            cursorWidth: 1.0,
+                            cursorHeight: 20.0,
+                            decoration: InputDecoration(
+                              iconColor: Colors.pink,
+                              border: InputBorder.none,
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Colors.pink,
+                                ),
                               ),
                             ),
+                            onFieldSubmitted: onFieldSubmitted,
                           ),
-                          onFieldSubmitted: onFieldSubmitted,
                         ),
+                      )
+                    : GestureDetector(
+                        onTap: () {
+                          _showBottomSheet();
+                        },
+                        child: Text(_content!),
                       ),
-                    )
-                  : GestureDetector(
-                      onTap: () {
-                        _showBottomSheet();
-                      },
-                      child: Text(widget.content),
-                    ),
-            ],
+              ],
+            ),
           ),
           SizedBox(
             width: 45.0,
@@ -114,10 +126,10 @@ class _ScheduleCardState extends State<ScheduleCard> {
       _isChecked = newValue ?? false; // newValue가 null이면 기본값 false를 사용
 
       GetIt.I<LocalDatabase>().updateScheduleById(
-        widget.scheduleId,
+        _scheduleId!,
         SchedulesCompanion(
           done: Value(_isChecked),
-          content: Value(widget.content),
+          content: Value(_content!),
           date: Value(widget.selectedDate),
         ),
       );
@@ -135,7 +147,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
       final key = await GetIt.I<LocalDatabase>().createSchedule(
         SchedulesCompanion(
           done: Value(false),
-          content: Value(content!),
+          content: Value(_content!),
           date: Value(widget.selectedDate),
         ),
       );
@@ -151,7 +163,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
       builder: (_) {
         return ControlBottomSheet(
           selectedDate: widget.selectedDate,
-          scheduleId: widget.scheduleId,
+          scheduleId: _scheduleId!,
         );
       },
     );

@@ -30,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Column(
             children: [
@@ -49,9 +50,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               isCreate
                   ? ScheduleCard(
-                    selectedDate: selectedDay,
-                    isChecked: false,
-                  )
+                      selectedDate: selectedDay,
+                      isChecked: false,
+                    )
                   : Container(),
               _ScheduleList(
                 selectedDate: selectedDay,

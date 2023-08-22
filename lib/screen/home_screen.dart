@@ -24,6 +24,12 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isCreate = false;
 
   @override
+  void initState() {
+    super.initState();
+    isCreate = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -48,12 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 15.0,
               ),
-              isCreate
-                  ? ScheduleCard(
-                      selectedDate: selectedDay,
-                      isChecked: false,
-                    )
-                  : Container(),
               _ScheduleList(
                 selectedDate: selectedDay,
                 isCreate: isCreate,
@@ -61,17 +61,21 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: PRIMARY_COLOR,
-          splashColor: PRIMARY_COLOR[600],
-          child: Icon(Icons.add),
-          onPressed: () {
-            setState(() {
-              isCreate = true;
-            });
-          },
-        ),
+        floatingActionButton: renderFloatingActionButton(),
       ),
+    );
+  }
+
+  FloatingActionButton renderFloatingActionButton() {
+    return FloatingActionButton(
+      backgroundColor: PRIMARY_COLOR,
+      splashColor: PRIMARY_COLOR[600],
+      child: Icon(Icons.add),
+      onPressed: () {
+        setState(() {
+          isCreate = true;
+        });
+      },
     );
   }
 
@@ -79,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       this.selectedDay = selectedDay;
       this.focusedDay = selectedDay;
+      isCreate = false;
     });
   }
 }
@@ -110,10 +115,15 @@ class _ScheduleList extends StatelessWidget {
             }
 
             return ListView.builder(
-              // ReorderableListView.builder
-              itemCount: snapshot.data!.length,
+              itemCount: snapshot.data!.length + (isCreate ? 1 : 0),
               itemBuilder: (context, index) {
-                // print(snapshot.data);
+                if (isCreate && index == snapshot.data!.length) {
+                  return ScheduleCard(
+                    selectedDate: selectedDate,
+                    isChecked: false,
+                  );
+                }
+
                 final schedule = snapshot.data![index];
 
                 return ScheduleCard(

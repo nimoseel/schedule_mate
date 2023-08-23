@@ -115,7 +115,8 @@ class _ScheduleList extends StatelessWidget {
             }
 
             return Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
               child: ListView.builder(
                 itemCount: snapshot.data!.length + (isCreate ? 1 : 0),
                 itemBuilder: (context, index) {
@@ -129,6 +130,7 @@ class _ScheduleList extends StatelessWidget {
                   final schedule = snapshot.data![index];
 
                   return ScheduleCard(
+                    key: ValueKey(schedule.id),
                     selectedDate: schedule.date,
                     isChecked: schedule.done,
                     content: schedule.content,

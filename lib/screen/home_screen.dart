@@ -114,25 +114,28 @@ class _ScheduleList extends StatelessWidget {
               );
             }
 
-            return ListView.builder(
-              itemCount: snapshot.data!.length + (isCreate ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (isCreate && index == snapshot.data!.length) {
+            return Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: ListView.builder(
+                itemCount: snapshot.data!.length + (isCreate ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (isCreate && index == snapshot.data!.length) {
+                    return ScheduleCard(
+                      selectedDate: selectedDate,
+                      isChecked: false,
+                    );
+                  }
+
+                  final schedule = snapshot.data![index];
+
                   return ScheduleCard(
-                    selectedDate: selectedDate,
-                    isChecked: false,
+                    selectedDate: schedule.date,
+                    isChecked: schedule.done,
+                    content: schedule.content,
+                    scheduleId: schedule.id,
                   );
-                }
-
-                final schedule = snapshot.data![index];
-
-                return ScheduleCard(
-                  selectedDate: schedule.date,
-                  isChecked: schedule.done,
-                  content: schedule.content,
-                  scheduleId: schedule.id,
-                );
-              },
+                },
+              ),
             );
           }),
     );

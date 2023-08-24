@@ -95,6 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+// 스케줄 리스트 위젯
 class _ScheduleList extends StatelessWidget {
   final DateTime selectedDate;
   final bool isCreate;
@@ -111,21 +112,22 @@ class _ScheduleList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: StreamBuilder<List<Schedule>>(
-          stream: GetIt.I<LocalDatabase>().watchSchedules(selectedDate),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
-            }
+        stream: GetIt.I<LocalDatabase>().watchSchedules(selectedDate),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
 
-            if (snapshot.hasData && snapshot.data!.isEmpty && !isCreate) {
-              return Center(
-                child: Text('스케줄이 없습니다.'),
-              );
-            }
+          if (snapshot.hasData && snapshot.data!.isEmpty && !isCreate) {
+            return Center(
+              child: Text('스케줄이 없습니다.'),
+            );
+          }
 
-            return Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Scrollbar(
               child: ListView.builder(
                 itemCount: snapshot.data!.length + (isCreate ? 1 : 0),
                 itemBuilder: (context, index) {
@@ -148,8 +150,10 @@ class _ScheduleList extends StatelessWidget {
                   );
                 },
               ),
-            );
-          }),
+            ),
+          );
+        },
+      ),
     );
   }
 }

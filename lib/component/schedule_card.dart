@@ -73,7 +73,6 @@ class _ScheduleCardState extends State<ScheduleCard> {
                       validator: (String? val) {
                         if (val == null || val.isEmpty) {
                           return '값을 입력해주세요';
-
                         }
                         return null;
                       },
@@ -206,8 +205,9 @@ class _ScheduleCardState extends State<ScheduleCard> {
                 child: Text("취소"),
               ),
               TextButton(
-                onPressed: () {
-                  GetIt.I<LocalDatabase>().removeSchedule(widget.scheduleId!);
+                onPressed: () async {
+                  await GetIt.I<LocalDatabase>()
+                      .removeSchedule(widget.scheduleId!);
                   Navigator.pop(context);
                 },
                 child: Text("확인"),

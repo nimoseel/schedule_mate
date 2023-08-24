@@ -66,6 +66,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                       focusNode: _focusNode,
                       initialValue: _content,
                       enabled: editable,
+                      autocorrect: false,
                       onSaved: (String? val) {
                         this._content = val;
                       },

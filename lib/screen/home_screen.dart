@@ -57,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
               _ScheduleList(
                 selectedDate: selectedDay,
                 isCreate: isCreate,
+                updateIsCreate: updateIsCreate, // 추가
               ),
             ],
           ),
@@ -86,15 +87,23 @@ class _HomeScreenState extends State<HomeScreen> {
       isCreate = false;
     });
   }
+
+  void updateIsCreate(bool value) {
+    setState(() {
+      isCreate = value;
+    });
+  }
 }
 
 class _ScheduleList extends StatelessWidget {
   final DateTime selectedDate;
   final bool isCreate;
+  final Function(bool) updateIsCreate;
 
   const _ScheduleList({
     required this.selectedDate,
     required this.isCreate,
+    required this.updateIsCreate,
     Key? key,
   }) : super(key: key);
 
@@ -124,9 +133,9 @@ class _ScheduleList extends StatelessWidget {
                     return ScheduleCard(
                       selectedDate: selectedDate,
                       isChecked: false,
+                      onScheduleAdded: updateIsCreate,
                     );
                   }
-
                   final schedule = snapshot.data![index];
 
                   return ScheduleCard(
@@ -135,6 +144,7 @@ class _ScheduleList extends StatelessWidget {
                     isChecked: schedule.done,
                     content: schedule.content,
                     scheduleId: schedule.id,
+                    onScheduleAdded: updateIsCreate,
                   );
                 },
               ),

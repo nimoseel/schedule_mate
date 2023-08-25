@@ -62,38 +62,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                 Form(
                   key: formKey,
                   child: Expanded(
-                    child: TextFormField(
-                      focusNode: _focusNode,
-                      initialValue: _content,
-                      enabled: editable,
-                      autocorrect: false,
-                      onSaved: (String? val) {
-                        this._content = val;
-                      },
-                      validator: (String? val) {
-                        if (val == null || val.isEmpty) {
-                          return '값을 입력해주세요';
-                        }
-                        return null;
-                      },
-                      autofocus: editable,
-                      cursorColor: PRIMARY_COLOR,
-                      cursorWidth: 1.0,
-                      cursorHeight: 20.0,
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                      decoration: InputDecoration(
-                        iconColor: Colors.pink,
-                        border: InputBorder.none,
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.pink,
-                          ),
-                        ),
-                      ),
-                      onFieldSubmitted: onFieldSubmitted,
-                    ),
+                    child: renderTextFormField(),
                   ),
                 )
               ],
@@ -128,30 +97,65 @@ class _ScheduleCardState extends State<ScheduleCard> {
     super.dispose();
   }
 
-  // checkbox onChange시 실행되는 함수
-  void _onChanged(bool? newValue) {
-    setState(
-      () {
-        _isChecked = newValue ?? false;
-
-        GetIt.I<LocalDatabase>().updateScheduleById(
-          widget.scheduleId!,
-          SchedulesCompanion(
-            done: Value(_isChecked),
-            content: Value(_content!),
-            date: Value(widget.selectedDate),
-          ),
-        );
+  TextFormField renderTextFormField() {
+    return TextFormField(
+      focusNode: _focusNode,
+      initialValue: _content,
+      enabled: editable,
+      autofocus: editable,
+      autocorrect: false,
+      onSaved: (String? val) {
+        this._content = val;
       },
+      cursorColor: PRIMARY_COLOR,
+      cursorWidth: 1.0,
+      cursorHeight: 20.0,
+      style: TextStyle(
+        color: Colors.black,
+      ),
+      decoration: InputDecoration(
+        iconColor: PRIMARY_COLOR,
+        border: InputBorder.none,
+        focusedBorder: UnderlineInputBorder(
+          borderSide: const BorderSide(
+            color: PRIMARY_COLOR,
+          ),
+        ),
+      ),
+      // onTapOutside: _onTapOutside,
+      onFieldSubmitted: _onFieldSubmitted,
     );
   }
 
+  // checkbox onChange시 실행되는 함수
+  void _onChanged(bool? newValue) async {
+    setState(() {
+      _isChecked = newValue ?? false;
+    });
+
+    await GetIt.I<LocalDatabase>().updateScheduleById(
+      widget.scheduleId!,
+      SchedulesCompanion(
+        done: Value(_isChecked),
+        content: Value(_content!),
+        date: Value(widget.selectedDate),
+      ),
+    );
+  }
+
+  void _onTapOutside(PointerDownEvent event) async {
+    _handleSubmitted();
+  }
+
   // textField 작성 후 done 클릭시 실행되는 함수
-  onFieldSubmitted(String? value) async {
+  void _onFieldSubmitted(String? value) async {
+    _handleSubmitted();
+  }
+
+  void _handleSubmitted() async {
     if (formKey.currentState == null) {
       return;
     }
-
     formKey.currentState!.save();
 
     // _content가 null이 아닐 때 저장 및 수정 실행
@@ -165,10 +169,8 @@ class _ScheduleCardState extends State<ScheduleCard> {
             date: Value(widget.selectedDate),
           ),
         );
-        widget.onScheduleAdded(false); // homeScreen의 isCreate 상태를 false로 변경
-      }
-      // 수정하기 실행시
-      if (widget.scheduleId != null) {
+        widget.onScheduleAdded(false);
+      } else {
         await GetIt.I<LocalDatabase>().updateScheduleById(
           widget.scheduleId!,
           SchedulesCompanion(
@@ -178,44 +180,49 @@ class _ScheduleCardState extends State<ScheduleCard> {
           ),
         );
       }
-
       setState(() {
         editable = false;
       });
-
       _focusNode.unfocus();
-    }
-
-    // 수정하기에서 _content를 빈값으로 만들었을 경우
-    if (widget.scheduleId != null && _content?.isEmpty == true) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("스케줄 입력"),
-            content: Text("스케줄을 삭제하시겠습니까?"),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _content = widget.content!;
-                  });
-                  Navigator.pop(context);
-                },
-                child: Text("취소"),
+    } else {
+      if (widget.scheduleId != null) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text(
+                "스케줄을 삭제하시겠습니까?",
+                style: TextStyle(fontSize: 18.0),
               ),
-              TextButton(
-                onPressed: () async {
-                  await GetIt.I<LocalDatabase>()
-                      .removeSchedule(widget.scheduleId!);
-                  Navigator.pop(context);
-                },
-                child: Text("확인"),
-              ),
-            ],
-          );
-        },
-      );
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _content = widget.content!;
+                    });
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    "취소",
+                    style: TextStyle(color: PRIMARY_COLOR),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await GetIt.I<LocalDatabase>()
+                        .removeSchedule(widget.scheduleId!);
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    "확인",
+                    style: TextStyle(color: PRIMARY_COLOR),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
   }
 
@@ -244,6 +251,8 @@ class _ScheduleCardState extends State<ScheduleCard> {
     setState(() {
       editable = true;
     });
-    // _focusNode.requestFocus();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
   }
 }

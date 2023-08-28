@@ -104,6 +104,8 @@ class _ScheduleCardState extends State<ScheduleCard> {
       enabled: editable,
       autofocus: editable,
       autocorrect: false,
+      maxLength: 20,
+      textInputAction: TextInputAction.done,
       onSaved: (String? val) {
         this._content = val;
       },
@@ -116,6 +118,8 @@ class _ScheduleCardState extends State<ScheduleCard> {
       decoration: InputDecoration(
         iconColor: PRIMARY_COLOR,
         border: InputBorder.none,
+        hintText: '최대 20글자 입력 가능',
+        counterText: '',
         focusedBorder: UnderlineInputBorder(
           borderSide: const BorderSide(
             color: PRIMARY_COLOR,

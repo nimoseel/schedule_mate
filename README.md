@@ -3,6 +3,7 @@
 - intl: ^0.18.1
 - drift: ^2.10.0
 - get_it: ^7.6.0
+- flutter_native_splash: ^2.3.2
 
 drift 추가시 
 https://drift.simonbinder.eu/docs/getting-started/
@@ -35,10 +36,38 @@ https://api.flutter.dev/flutter/widgets/WidgetsFlutterBinding/ensureInitialized.
   
 <br/>
   
-### textFormField를 두가지 방법으로 저장하기 
-- textFormField 아웃포커싱 되면 저장 
-- 키보드 내 done 버튼 누르면 저장
- 
+### textFormField 값을 저장하는 방법
+> - textFormField 아웃포커싱 되면 저장
+> - 키보드 내 done 버튼 누르면 저장
+
+#### - 기존 코드
+- onFieldSubmitted, onTapOutside에 _handleSubmitted 함수를 실행하는 방법을 사용
+- onTapOutside가 AlertDialog와 상호작용 할 때 잘못된 동작을 일으키는 문제가 있었음<br/>
+(취소, 확인 버튼을 눌러도 정상 작동하지 않고 다이얼로그 외부가 어두워짐)
+
+
+#### - 수정 코드
+- `_focusNode.addListener(_handleFocusChange);` 하는 방법으로 변경
+- 포커스를 잃었을 때 _handleSubmitted 함수 실행한다는 것은 곧 textFormField 외부를 터치하여 저장할 수 있다는 것
+- textFormField 외부를 터치하면 포커스를 잃기 때문에 _handleSubmitted 실행
+- 키보드 내 done 버튼 눌렀을 때도 포커스가 해제되기 때문에 _handleSubmitted 실행
+
+```dart
+@override
+void initState() {
+  super.initState();
+  // 기존 코드
+  
+  _focusNode.addListener(_handleFocusChange); // 코드 추가 
+}
+
+void _handleFocusChange() {
+  if (!_focusNode.hasFocus) { // 포커스를 잃었을 때 _handleSubmitted 실행 
+    _handleSubmitted();
+  }
+}
+```
+
 <br/>
 
 ### 스케줄 카드의 수정하기 버튼을 눌렀을 때 해당 필드로 포커스되게 하기

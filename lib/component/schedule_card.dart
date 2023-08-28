@@ -43,6 +43,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
     editable = _content == null;
 
     _textEditingController.text = widget.content ?? '';
+    _focusNode.addListener(_handleFocusChange);
   }
 
   @override
@@ -131,8 +132,6 @@ class _ScheduleCardState extends State<ScheduleCard> {
           ),
         ),
       ),
-      // onTapOutside: _onTapOutside,
-      onFieldSubmitted: _onFieldSubmitted,
     );
   }
 
@@ -152,13 +151,10 @@ class _ScheduleCardState extends State<ScheduleCard> {
     );
   }
 
-  void _onTapOutside(PointerDownEvent event) async {
-    _handleSubmitted();
-  }
-
-  // textField 작성 후 done 클릭시 실행되는 함수
-  void _onFieldSubmitted(String? value) async {
-    _handleSubmitted();
+  void _handleFocusChange() {
+    if (!_focusNode.hasFocus) {
+      _handleSubmitted();
+    }
   }
 
   void _handleSubmitted() async {

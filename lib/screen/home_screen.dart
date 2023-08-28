@@ -23,10 +23,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool isCreate = false;
 
+  late ScrollController _scrollController;
+
   @override
   void initState() {
     super.initState();
     isCreate = false;
+    _scrollController = ScrollController();
   }
 
   @override
@@ -57,7 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
               _ScheduleList(
                 selectedDate: selectedDay,
                 isCreate: isCreate,
-                updateIsCreate: updateIsCreate, // 추가
+                updateIsCreate: updateIsCreate,
+                scrollController: _scrollController,
               ),
             ],
           ),
@@ -100,11 +104,13 @@ class _ScheduleList extends StatelessWidget {
   final DateTime selectedDate;
   final bool isCreate;
   final Function(bool) updateIsCreate;
+  final ScrollController scrollController;
 
   const _ScheduleList({
     required this.selectedDate,
     required this.isCreate,
     required this.updateIsCreate,
+    required this.scrollController,
     Key? key,
   }) : super(key: key);
 
@@ -128,10 +134,16 @@ class _ScheduleList extends StatelessWidget {
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Scrollbar(
+              controller: scrollController,
               child: ListView.builder(
+                controller: scrollController,
                 itemCount: snapshot.data!.length + (isCreate ? 1 : 0),
                 itemBuilder: (context, index) {
                   if (isCreate && index == snapshot.data!.length) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      scrollController
+                          .jumpTo(scrollController.position.maxScrollExtent);
+                    });
                     return ScheduleCard(
                       selectedDate: selectedDate,
                       isChecked: false,

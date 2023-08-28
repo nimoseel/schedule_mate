@@ -29,6 +29,8 @@ class _ScheduleCardState extends State<ScheduleCard> {
   final GlobalKey<FormState> formKey = GlobalKey();
   final FocusNode _focusNode = FocusNode();
 
+  final TextEditingController _textEditingController = TextEditingController();
+
   bool _isChecked = false;
   String? _content;
   bool editable = false;
@@ -39,6 +41,8 @@ class _ScheduleCardState extends State<ScheduleCard> {
     _isChecked = widget.isChecked;
     _content = widget.content;
     editable = _content == null;
+
+    _textEditingController.text = widget.content ?? '';
   }
 
   @override
@@ -94,13 +98,14 @@ class _ScheduleCardState extends State<ScheduleCard> {
   @override
   void dispose() {
     _focusNode.dispose();
+    _textEditingController.dispose();
     super.dispose();
   }
 
   TextFormField renderTextFormField() {
     return TextFormField(
+      controller: _textEditingController,
       focusNode: _focusNode,
-      initialValue: _content,
       enabled: editable,
       autofocus: editable,
       autocorrect: false,
@@ -202,7 +207,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      _content = widget.content!;
+                      _textEditingController.text = widget.content!;
                     });
                     Navigator.pop(context);
                   },

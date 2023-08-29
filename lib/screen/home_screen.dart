@@ -39,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        floatingActionButton: renderFloatingActionButton(),
         resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Column(
@@ -66,7 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        floatingActionButton: renderFloatingActionButton(),
       ),
     );
   }

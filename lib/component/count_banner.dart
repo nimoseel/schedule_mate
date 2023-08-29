@@ -18,7 +18,7 @@ class CountBanner extends StatelessWidget {
         color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.w500);
 
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 20.0),
+      padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 20.0),
       color: PRIMARY_COLOR,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

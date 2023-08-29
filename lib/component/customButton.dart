@@ -18,11 +18,11 @@ class CustomElevatedButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: 15.0),
+          padding: const EdgeInsets.symmetric(vertical: 15.0),
           foregroundColor: PRIMARY_COLOR[200],
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
-          side: BorderSide(
+          side: const BorderSide(
             color: PRIMARY_COLOR,
             width: 1.0,
             style: BorderStyle.solid,
@@ -31,7 +31,7 @@ class CustomElevatedButton extends StatelessWidget {
         ),
         child: Text(
           buttonText,
-          style: TextStyle(color: Colors.black),
+          style: const TextStyle(color: Colors.black),
         ),
       ),
     );

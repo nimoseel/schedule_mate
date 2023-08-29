@@ -26,7 +26,7 @@ class Calendar extends StatelessWidget {
       focusedDay: focusedDay,
       firstDay: DateTime(2010),
       lastDay: DateTime(2123),
-      headerStyle: HeaderStyle(
+      headerStyle: const HeaderStyle(
         titleCentered: true,
         formatButtonVisible: false,
         leftChevronIcon: Icon(
@@ -40,7 +40,7 @@ class Calendar extends StatelessWidget {
       ),
       daysOfWeekHeight: 20.0,
       calendarStyle: CalendarStyle(
-        tablePadding: EdgeInsets.symmetric(horizontal: 8.0),
+        tablePadding: const EdgeInsets.symmetric(horizontal: 8.0),
         isTodayHighlighted: false,
         defaultDecoration: defaultBoxStyle,
         weekendDecoration: defaultBoxStyle,
@@ -52,11 +52,11 @@ class Calendar extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(17.0),
         ),
-        selectedTextStyle: TextStyle(
+        selectedTextStyle: const TextStyle(
           color: PRIMARY_COLOR,
           fontWeight: FontWeight.w500,
         ),
-        outsideDecoration: BoxDecoration(
+        outsideDecoration: const BoxDecoration(
           shape: BoxShape.rectangle,
         ),
       ),

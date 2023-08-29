@@ -48,13 +48,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 focusedDay: focusedDay,
                 onDaySelected: onDaySelected,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15.0,
               ),
               CountBanner(
                 selectedDay: selectedDay,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15.0,
               ),
               _ScheduleList(
@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return FloatingActionButton(
       backgroundColor: PRIMARY_COLOR,
       splashColor: PRIMARY_COLOR[600],
-      child: Icon(Icons.add),
+      child: const Icon(Icons.add),
       onPressed: () {
         setState(() {
           isCreate = true;
@@ -121,11 +121,11 @@ class _ScheduleList extends StatelessWidget {
         stream: GetIt.I<LocalDatabase>().watchSchedules(selectedDate),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasData && snapshot.data!.isEmpty && !isCreate) {
-            return Center(
+            return const Center(
               child: Text('스케줄이 없습니다.'),
             );
           }

@@ -49,7 +49,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -60,7 +60,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                   value: _isChecked,
                   onChanged: _onChanged,
                   activeColor: PRIMARY_COLOR,
-                  side: BorderSide(
+                  side: const BorderSide(
                     color: PRIMARY_COLOR,
                   ),
                 ),
@@ -82,9 +82,9 @@ class _ScheduleCardState extends State<ScheduleCard> {
               style: ElevatedButton.styleFrom(
                 shadowColor: Colors.transparent,
                 backgroundColor: Colors.transparent,
-                padding: EdgeInsets.only(right: 5.0),
+                padding: const EdgeInsets.only(right: 5.0),
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.more_vert,
                 color: Colors.grey,
                 size: 20.0,
@@ -125,16 +125,16 @@ class _ScheduleCardState extends State<ScheduleCard> {
       cursorColor: PRIMARY_COLOR,
       cursorWidth: 1.0,
       cursorHeight: 20.0,
-      style: TextStyle(
+      style: const TextStyle(
         color: Colors.black,
       ),
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         iconColor: PRIMARY_COLOR,
         border: InputBorder.none,
         hintText: '최대 20글자 입력 가능',
         counterText: '',
         focusedBorder: UnderlineInputBorder(
-          borderSide: const BorderSide(
+          borderSide: BorderSide(
             color: PRIMARY_COLOR,
           ),
         ),
@@ -176,7 +176,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
       if (widget.scheduleId == null) {
         await GetIt.I<LocalDatabase>().createSchedule(
           SchedulesCompanion(
-            done: Value(false),
+            done: const Value(false),
             content: Value(_content!),
             date: Value(widget.selectedDate),
           ),

@@ -19,7 +19,7 @@ void main() async{
       theme: ThemeData(
         fontFamily: 'IBMPlexSans',
       ),
-      home: HomeScreen(),
+      home: const HomeScreen(),
     ),
   );
 }

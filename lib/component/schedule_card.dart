@@ -28,7 +28,6 @@ class ScheduleCard extends StatefulWidget {
 class _ScheduleCardState extends State<ScheduleCard> {
   final GlobalKey<FormState> formKey = GlobalKey();
   final FocusNode _focusNode = FocusNode();
-
   final TextEditingController _textEditingController = TextEditingController();
 
   bool _isChecked = false;
@@ -44,6 +43,13 @@ class _ScheduleCardState extends State<ScheduleCard> {
 
     _textEditingController.text = widget.content ?? '';
     _focusNode.addListener(_handleFocusChange);
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _textEditingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -67,7 +73,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                 Form(
                   key: formKey,
                   child: Expanded(
-                    child: renderTextFormField(),
+                    child: _textFormField(),
                   ),
                 )
               ],
@@ -76,9 +82,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
           SizedBox(
             width: 45.0,
             child: ElevatedButton(
-              onPressed: () {
-                _showBottomSheet();
-              },
+              onPressed: _showModalBottomSheet,
               style: ElevatedButton.styleFrom(
                 shadowColor: Colors.transparent,
                 backgroundColor: Colors.transparent,
@@ -96,14 +100,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
     );
   }
 
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    _textEditingController.dispose();
-    super.dispose();
-  }
-
-  TextFormField renderTextFormField() {
+  TextFormField _textFormField() {
     return TextFormField(
       controller: _textEditingController,
       focusNode: _focusNode,
@@ -115,11 +112,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
       onSaved: (String? val) {
         if (val != null) {
           String trimmedVal = val.replaceAll(RegExp(r'\s+'), '');
-          if (trimmedVal.isNotEmpty) {
-            _content = val;
-          } else {
-            _content = null;
-          }
+          _content = trimmedVal.isNotEmpty ? val : null;
         }
       },
       cursorColor: PRIMARY_COLOR,
@@ -142,20 +135,11 @@ class _ScheduleCardState extends State<ScheduleCard> {
     );
   }
 
-  // checkbox onChange시 실행되는 함수
   void _onChanged(bool? newValue) async {
     setState(() {
       _isChecked = newValue ?? false;
     });
-
-    await GetIt.I<LocalDatabase>().updateScheduleById(
-      widget.scheduleId!,
-      SchedulesCompanion(
-        done: Value(_isChecked),
-        content: Value(_content!),
-        date: Value(widget.selectedDate),
-      ),
-    );
+    await _updateSchedule();
   }
 
   void _handleFocusChange() {
@@ -170,27 +154,12 @@ class _ScheduleCardState extends State<ScheduleCard> {
     }
     formKey.currentState!.save();
 
-    // _content가 null이 아닐 때 저장 및 수정 실행
     if (_content != null && _content!.isNotEmpty) {
-      // 새로운 스케줄카드 저장시
       if (widget.scheduleId == null) {
-        await GetIt.I<LocalDatabase>().createSchedule(
-          SchedulesCompanion(
-            done: const Value(false),
-            content: Value(_content!),
-            date: Value(widget.selectedDate),
-          ),
-        );
+        await _createSchedule();
         widget.onScheduleAdded(false);
       } else {
-        await GetIt.I<LocalDatabase>().updateScheduleById(
-          widget.scheduleId!,
-          SchedulesCompanion(
-            done: Value(_isChecked),
-            content: Value(_content!),
-            date: Value(widget.selectedDate),
-          ),
-        );
+        await _updateSchedule();
       }
       setState(() {
         editable = false;
@@ -198,55 +167,41 @@ class _ScheduleCardState extends State<ScheduleCard> {
       _focusNode.unfocus();
     } else {
       if (widget.scheduleId != null) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text(
-                "스케줄을 삭제하시겠습니까?",
-                style: TextStyle(fontSize: 18.0),
-              ),
-              actions: [
-                TextButton(
-                  style: TextButton.styleFrom(
-                    foregroundColor: PRIMARY_COLOR,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _textEditingController.text = widget.content!;
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    "취소",
-                    style: TextStyle(color: PRIMARY_COLOR),
-                  ),
-                ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    foregroundColor: PRIMARY_COLOR,
-                  ),
-                  onPressed: () async {
-                    await GetIt.I<LocalDatabase>()
-                        .removeSchedule(widget.scheduleId!);
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    "확인",
-                    style: TextStyle(color: PRIMARY_COLOR),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
+        _showAlertDialog();
       }
     }
   }
 
-  // bottomSheet 보여주는 함수
-  void _showBottomSheet() {
-    // scheduleId null 체크 조건 추가 -> 새 스케줄카드 create시 오류 문제 해결
+  void _showAlertDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            "스케줄을 삭제하시겠습니까?",
+            style: TextStyle(fontSize: 18.0),
+          ),
+          actions: [
+            _alertButton(
+              onPressed: () {
+                setState(() {
+                  _textEditingController.text = widget.content!;
+                });
+                Navigator.pop(context);
+              },
+              text: "취소",
+            ),
+            _alertButton(
+              onPressed: _deleteSchedule,
+              text: "확인",
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showModalBottomSheet() {
     if (widget.scheduleId != null) {
       showModalBottomSheet(
         context: context,
@@ -254,17 +209,14 @@ class _ScheduleCardState extends State<ScheduleCard> {
           return ControlBottomSheet(
             selectedDate: widget.selectedDate,
             scheduleId: widget.scheduleId!,
-            onPressedEdit: onPressedEdit,
+            onPressedEdit: _onPressedEdit,
           );
         },
       );
-    } else {
-      return;
     }
   }
 
-  // 수정하기 실행 함수
-  void onPressedEdit() {
+  void _onPressedEdit() {
     Navigator.pop(context);
     setState(() {
       editable = true;
@@ -272,5 +224,47 @@ class _ScheduleCardState extends State<ScheduleCard> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
+  }
+
+  Future<void> _createSchedule() async {
+    await GetIt.I<LocalDatabase>().createSchedule(
+      SchedulesCompanion(
+        done: const Value(false),
+        content: Value(_content!),
+        date: Value(widget.selectedDate),
+      ),
+    );
+  }
+
+  Future<void> _updateSchedule() async {
+    await GetIt.I<LocalDatabase>().updateScheduleById(
+      widget.scheduleId!,
+      SchedulesCompanion(
+        done: Value(_isChecked),
+        content: Value(_content!),
+        date: Value(widget.selectedDate),
+      ),
+    );
+  }
+
+  void _deleteSchedule() async {
+    await GetIt.I<LocalDatabase>().removeSchedule(widget.scheduleId!);
+    Navigator.pop(context);
+  }
+
+  Widget _alertButton({
+    required VoidCallback onPressed,
+    required String text,
+  }) {
+    return TextButton(
+      style: TextButton.styleFrom(
+        foregroundColor: PRIMARY_COLOR,
+      ),
+      onPressed: onPressed,
+      child: Text(
+        text,
+        style: TextStyle(color: PRIMARY_COLOR),
+      ),
+    );
   }
 }

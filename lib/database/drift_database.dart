@@ -16,7 +16,8 @@ class LocalDatabase extends _$LocalDatabase {
   LocalDatabase() : super(_openConnection());
 
   // 스케쥴 생성 쿼리
-  Future<int> createSchedule(SchedulesCompanion data) => into(schedules).insert(data);
+  Future<int> createSchedule(SchedulesCompanion data) =>
+      into(schedules).insert(data);
 
   // 스케쥴 데이터 Stream 쿼리
   Stream<List<Schedule>> watchSchedules(DateTime date) =>

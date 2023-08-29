@@ -8,14 +8,16 @@ class CountBanner extends StatelessWidget {
 
   const CountBanner({
     required this.selectedDay,
-
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     const TextStyle bannerTextStyle = TextStyle(
-        color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.w500);
+      color: Colors.white,
+      fontSize: 16.0,
+      fontWeight: FontWeight.w500,
+    );
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 20.0),
@@ -34,12 +36,12 @@ class CountBanner extends StatelessWidget {
               int doneCount = 0;
 
               if (snapshot.data != null) {
-                if(snapshot.hasData){
+                if (snapshot.hasData) {
                   count = snapshot.data!.length;
                 }
 
-                for(Schedule data in snapshot.data!){
-                  if(data.done == true){
+                for (Schedule data in snapshot.data!) {
+                  if (data.done == true) {
                     doneCount++;
                   }
                 }
@@ -49,7 +51,7 @@ class CountBanner extends StatelessWidget {
                 '${doneCount}/${count}개',
                 style: bannerTextStyle,
               );
-            }
+            },
           ),
         ],
       ),

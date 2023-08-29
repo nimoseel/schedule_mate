@@ -201,6 +201,9 @@ class _ScheduleCardState extends State<ScheduleCard> {
               ),
               actions: [
                 TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: PRIMARY_COLOR,
+                  ),
                   onPressed: () {
                     setState(() {
                       _textEditingController.text = widget.content!;
@@ -213,6 +216,9 @@ class _ScheduleCardState extends State<ScheduleCard> {
                   ),
                 ),
                 TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: PRIMARY_COLOR,
+                  ),
                   onPressed: () async {
                     await GetIt.I<LocalDatabase>()
                         .removeSchedule(widget.scheduleId!);

@@ -99,3 +99,16 @@ onPressedEdit함수 내에서 _focusNode 값을 print해보니 <br/>
       FocusScope.of(context).requestFocus(_focusNode);
     });
 ```
+
+<br/>
+
+### late 키워드 
+- 변수 선언시 초기값을 주지 않지만 생성자 내에서 초기값을 할당하여 사용하는 것.
+- late 키워드 사용시 컴파일러가 해당 변수가 나중에 초기화 될 것이라는 것을 인지하고 에러 발생시키지 않음.
+
+`late ScrollController _scrollController;`<br/>
+
+스크롤 컨트롤러의 경우 위젯 트리가 렌더링되기 전에 컨트롤러를 초기화할 경우 원치 않는 동작이 발생할 수 있음.<br/>
+(ex. 위젯 렌더링 전 컨트롤러가 스크롤 이벤트 처리하려고하는 경우) <br/>
+때문에 위젯 트리가 렌더링된 후에 초기화하는 것이 좋음<br/>
+late 키워드 사용으로 변수 선언시 초기값을 주지 않아도 되고, 위젯 트리 빌드 후 변수 초기화 가능

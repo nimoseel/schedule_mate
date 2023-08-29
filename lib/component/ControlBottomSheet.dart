@@ -8,7 +8,6 @@ class ControlBottomSheet extends StatelessWidget {
   final int scheduleId;
   final VoidCallback onPressedEdit;
 
-
   const ControlBottomSheet({
     required this.selectedDate,
     required this.scheduleId,
@@ -21,6 +20,7 @@ class ControlBottomSheet extends StatelessWidget {
     return SafeArea(
       child: Container(
         padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
+        color: Colors.transparent,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -30,7 +30,7 @@ class ControlBottomSheet extends StatelessWidget {
               },
               buttonText: '수정하기',
             ),
-            SizedBox(
+            const SizedBox(
               width: 20.0,
             ),
             CustomElevatedButton(
@@ -42,7 +42,6 @@ class ControlBottomSheet extends StatelessWidget {
             ),
           ],
         ),
-        color: Colors.transparent,
       ),
     );
   }

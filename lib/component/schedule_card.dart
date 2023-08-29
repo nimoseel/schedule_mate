@@ -113,7 +113,14 @@ class _ScheduleCardState extends State<ScheduleCard> {
       maxLength: 20,
       textInputAction: TextInputAction.done,
       onSaved: (String? val) {
-        this._content = val;
+        if (val != null) {
+          String trimmedVal = val.replaceAll(RegExp(r'\s+'), '');
+          if (trimmedVal.isNotEmpty) {
+            _content = val;
+          } else {
+            _content = null;
+          }
+        }
       },
       cursorColor: PRIMARY_COLOR,
       cursorWidth: 1.0,

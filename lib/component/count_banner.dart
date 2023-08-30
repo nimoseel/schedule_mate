@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:schedule_mate/database/drift_database.dart';
-import '../const/color.dart';
+import 'package:schedule_mate/const/color.dart';
 
 class CountBanner extends StatelessWidget {
   final DateTime selectedDay;

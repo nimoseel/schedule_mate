@@ -3,7 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:drift/drift.dart';
 import 'package:schedule_mate/const/color.dart';
 import 'package:schedule_mate/database/drift_database.dart';
-import 'ControlBottomSheet.dart';
+import 'control_bottom_sheet.dart';
 
 class ScheduleCard extends StatefulWidget {
   final DateTime selectedDate;

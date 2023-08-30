@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../const/color.dart';
+import 'package:schedule_mate/const/color.dart';
 
 class CustomElevatedButton extends StatelessWidget {
   final VoidCallback onPressed;

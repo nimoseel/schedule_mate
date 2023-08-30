@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:schedule_mate/database/drift_database.dart';
-import 'customButton.dart';
+import 'custom_button.dart';
 
 class ControlBottomSheet extends StatelessWidget {
   final DateTime selectedDate;

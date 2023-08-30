@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../const/color.dart';
 
-// 커스텀 버튼 위젯
 class CustomElevatedButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String buttonText;

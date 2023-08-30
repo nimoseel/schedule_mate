@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+  void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     setState(() {
       this.selectedDay = selectedDay;
       this.focusedDay = selectedDay;

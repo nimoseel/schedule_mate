@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import '../database/drift_database.dart';
+import 'package:schedule_mate/database/drift_database.dart';
 import 'customButton.dart';
 
 class ControlBottomSheet extends StatelessWidget {
@@ -25,7 +25,7 @@ class ControlBottomSheet extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CustomElevatedButton(
-              onPressed: () async{
+              onPressed: () async {
                 onPressedEdit();
               },
               buttonText: '수정하기',
@@ -34,7 +34,7 @@ class ControlBottomSheet extends StatelessWidget {
               width: 20.0,
             ),
             CustomElevatedButton(
-              onPressed: () async{
+              onPressed: () async {
                 await GetIt.I<LocalDatabase>().removeSchedule(scheduleId);
                 Navigator.pop(context);
               },

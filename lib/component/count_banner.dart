@@ -47,10 +47,12 @@ class CountBanner extends StatelessWidget {
                 }
               }
 
-              return Text(
-                '${doneCount}/${count}개',
-                style: bannerTextStyle,
-              );
+              return count < 1
+                  ? Container()
+                  : Text(
+                      '${doneCount}/${count}개',
+                      style: bannerTextStyle,
+                    );
             },
           ),
         ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:drift/drift.dart';
 import 'package:schedule_mate/const/color.dart';
@@ -107,7 +108,9 @@ class _ScheduleCardState extends State<ScheduleCard> {
       enabled: editable,
       autofocus: editable,
       autocorrect: false,
-      maxLength: 20,
+      maxLength: 40,
+      minLines: 1,
+      maxLines: 2,
       textInputAction: TextInputAction.done,
       onSaved: (String? val) {
         if (val != null) {
@@ -120,11 +123,12 @@ class _ScheduleCardState extends State<ScheduleCard> {
       cursorHeight: 20.0,
       style: const TextStyle(
         color: Colors.black,
+        overflow: TextOverflow.ellipsis,
       ),
       decoration: const InputDecoration(
         iconColor: PRIMARY_COLOR,
         border: InputBorder.none,
-        hintText: '최대 20글자 입력 가능',
+        hintText: '최대 40글자 입력 가능',
         counterText: '',
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(

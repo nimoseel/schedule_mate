@@ -1,38 +1,47 @@
-## 프로젝트 소개 
-플러터를 학습하며 만든 '스케줄 메이트'입니다.
-table_calendar 패키지를 사용하여 달력을 구현했으며
-캘린더의 날짜를 선택하여 해당 날짜의 스케줄을 입력하고, 수정하고, 삭제할 수 있습니다.
-확인 버튼을 누르거나 텍스트 필드 아웃포커스를 통해 스케줄을 저장하고, 수정할 수 있습니다.
-앱의 스플래쉬 화면의 경우 flutter_native_splash 패키지를 활용하여 구현했습니다.
+## 0. 프로젝트 소개 
+> 플러터를 학습하며 만든 '스케줄 메이트'입니다.<br/>
+table_calendar 패키지를 사용하여 달력을 구현했으며<br/>
+캘린더의 날짜를 선택하여 해당 날짜의 스케줄을 입력하고, 수정하고, 삭제할 수 있습니다.<br/>
+확인 버튼을 누르거나 텍스트 필드 아웃포커스를 통해 스케줄을 저장하고, 수정할 수 있습니다.<br/>
+앱의 스플래쉬 화면의 경우 flutter_native_splash 패키지를 활용하여 구현했습니다.<br/>
 
-## 추가한 패키지
+<br/>
+
+## 1. 실행 화면
+|                                               1. 스플래쉬 화면                                                |                                               2. 주요 기능 - 일정 추가, 수정, 삭제                                                |
+|:-------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------:|
+| <image src="https://velog.velcdn.com/images/miniso/post/d32fde74-5bde-48db-8e78-e210c9f561d5/image.png" width="400"/>| <image src="https://velog.velcdn.com/images/miniso/post/e7e11906-8f95-435d-b538-30f640ca694c/image.gif" width="400"/> |
+
+<br/>
+
+## 2. 추가한 패키지
 - table_calendar: ^3.0.9
 - intl: ^0.18.1
 - drift: ^2.10.0
 - get_it: ^7.6.0
 - flutter_native_splash: ^2.3.2
 
-drift 추가시 
+    >drift 추가시 <br/>
 https://drift.simonbinder.eu/docs/getting-started/
 
+<br/>
 
-## 에러 처리 
-### 1. Failed assertion: line 128 pos 12: 'shape != BoxShape.circle || borderRadius == null': is not true.
+## 3. 에러 처리 
+### 3-1. Failed assertion: line 128 pos 12: 'shape != BoxShape.circle || borderRadius == null': is not true.
 <image width='600' src='https://velog.velcdn.com/images/miniso/post/37daf9c1-1282-4a68-9533-9716b8fed01f/image.png'/><br/>
- BoxShape가 circle인 경우에는 borderRadius가 null이 아니어야 한다는 조건을 만족하지 않을 때 발생
+BoxShape가 circle인 경우에는 borderRadius가 null이 아니어야 한다는 조건을 만족하지 않을 때 발생
 
-CalendarStyle에 다음 코드 추가  
+- CalendarStyle에 다음 코드를 추가하여 해결  
 
-```
+```dart
 outsideDecoration: BoxDecoration(
           shape: BoxShape.rectangle,
-        ),
+        );
 ```
 <br/>
-<br/>
 
-## 남겨두기
-### WidgetsFlutterBinding.ensureInitialized();
+## 4. 남겨두기
+### 4-1. WidgetsFlutterBinding.ensureInitialized();
 https://api.flutter.dev/flutter/widgets/WidgetsFlutterBinding/ensureInitialized.html
 - 바인딩이 초기화되지 않았다면, WidgetsFlutterBinding 클래스를 사용하여 새로운 바인딩 인스턴스를 생성하고 초기화
 - runApp을 호출하기 전에 바인딩이 초기화되어야 하는 경우에만 이 메서드를 호출
@@ -43,7 +52,7 @@ https://api.flutter.dev/flutter/widgets/WidgetsFlutterBinding/ensureInitialized.
   
 <br/>
   
-### textFormField 값을 저장하는 방법
+### 4-2. textFormField 값을 저장하는 방법
 > - textFormField 아웃포커싱 되면 저장
 > - 키보드 내 done 버튼 누르면 저장
 
@@ -77,7 +86,7 @@ void _handleFocusChange() {
 
 <br/>
 
-### 스케줄 카드의 수정하기 버튼을 눌렀을 때 해당 필드로 포커스되게 하기
+### 4-3. 스케줄 카드의 수정하기 버튼을 눌렀을 때 해당 필드로 포커스되게 하기
 #### - 기존코드
 스케줄 카드의 수정하기 버튼을 처음 누른 경우 해당 필드로 포커스 되지 않고, <br/> 
 다시 한번 수정하기 버튼을 눌러야 해당 필드로 포커스가 되었다.
@@ -94,10 +103,10 @@ onPressedEdit함수 내에서 _focusNode 값을 print해보니 <br/>
 첫번째 클릭시 `flutter: FocusNode#e072f(context: Focus, NOT FOCUSABLE)` <br/>
 두번째 클릭시 `flutter: FocusNode#e072f(context: Focus)`
 
-이는 FocusNode가 렌더링 된 이후에 포커스를 요청해야한다는 것.
+이는 FocusNode가 렌더링 된 이후에 포커스를 요청해야한다는 것.<br/>
 위 코드에서 onPressedEdit 함수가 호출되었을 때 setState를 통해 위젯이 다시 렌더링되면서 _focusNode.requestFocus()를 호출하기 때문에 문제가 발생하는 것. 
 
-`WidgetsBinding.instance?.addPostFrameCallback`은 위젯이 렌더링된 후에 특정 작업을 실행시킨다.
+`WidgetsBinding.instance?.addPostFrameCallback`은 위젯이 렌더링된 후에 특정 작업을 실행시킨다. <br/>
 때문에 `WidgetsBinding.instance?.addPostFrameCallback`을 사용하여 위젯이 다시 렌더링된 후에 포커스를 요청하도록 한다.
 
 #### - 수정코드
@@ -109,13 +118,15 @@ onPressedEdit함수 내에서 _focusNode 값을 print해보니 <br/>
 
 <br/>
 
-### late 키워드 
+### 4-4. late 키워드 
 - 변수 선언시 초기값을 주지 않지만 생성자 내에서 초기값을 할당하여 사용하는 것.
 - late 키워드 사용시 컴파일러가 해당 변수가 나중에 초기화 될 것이라는 것을 인지하고 에러 발생시키지 않음.
 
-`late ScrollController _scrollController;`<br/>
+```dart
+late ScrollController _scrollController;
+```
 
-스크롤 컨트롤러의 경우 위젯 트리가 렌더링되기 전에 컨트롤러를 초기화할 경우 원치 않는 동작이 발생할 수 있음.<br/>
+스크롤 컨트롤러의 경우 위젯 트리가 렌더링되기 전에 컨트롤러를 초기화할 경우 원치 않는 동작이 발생할 수 있다.<br/>
 (ex. 위젯 렌더링 전 컨트롤러가 스크롤 이벤트 처리하려고하는 경우) <br/>
-때문에 위젯 트리가 렌더링된 후에 초기화하는 것이 좋음<br/>
-late 키워드 사용으로 변수 선언시 초기값을 주지 않아도 되고, 위젯 트리 빌드 후 변수 초기화 가능
+때문에 위젯 트리가 렌더링된 후에 초기화하는 것이 좋다.<br/>
+late 키워드 사용으로 변수 선언시 초기값을 주지 않아도 되고, 위젯 트리 빌드 후 변수 초기화 가능하다.
